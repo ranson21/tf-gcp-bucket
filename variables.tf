@@ -1,3 +1,9 @@
+variable "object_admins" {
+  description = "List of members who can manage objects in the bucket (e.g. ['user:someone@example.com', 'serviceAccount:my-service@project.iam.gserviceaccount.com'])"
+  type        = list(string)
+  default     = []
+}
+
 variable "project_id" {
   description = "The ID of the project to create the bucket in"
   type        = string

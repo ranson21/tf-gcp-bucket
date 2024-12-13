@@ -45,13 +45,27 @@ resource "google_storage_bucket" "bucket" {
   }
 }
 
-resource "google_storage_bucket_iam_member" "public_read" {
-  bucket = google_storage_bucket.bucket.name
-  role   = "roles/storage.objectViewer"
-  member = "allUsers"
+# Grant public read access
+resource "google_storage_bucket_iam_binding" "public_read" {
+  bucket  = google_storage_bucket.bucket.name
+  role    = "roles/storage.objectViewer"
+  members = ["allUsers"]
 }
 
+# Grant object creation permissions to any authenticated user
+resource "google_storage_bucket_iam_binding" "object_admin" {
+  bucket  = google_storage_bucket.bucket.name
+  role    = "roles/storage.objectAdmin"
+  members = ["allAuthenticatedUsers"]
+}
+
+# Legacy ACL for backward compatibility
 resource "google_storage_default_object_acl" "default_obj_acl" {
-  bucket      = google_storage_bucket.bucket.name
-  role_entity = ["READER:allUsers"]
+  bucket = google_storage_bucket.bucket.name
+  role_entity = [
+    "OWNER:project-owners-${var.project_id}",
+    "OWNER:project-editors-${var.project_id}",
+    "READER:project-viewers-${var.project_id}",
+    "READER:allUsers",
+  ]
 }
