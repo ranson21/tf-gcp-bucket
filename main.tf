@@ -59,13 +59,3 @@ resource "google_storage_bucket_iam_binding" "object_admin" {
   members = ["allAuthenticatedUsers"]
 }
 
-# Legacy ACL for backward compatibility
-resource "google_storage_default_object_acl" "default_obj_acl" {
-  bucket = google_storage_bucket.bucket.name
-  role_entity = [
-    "OWNER:project-owners-${var.project_id}",
-    "OWNER:project-editors-${var.project_id}",
-    "READER:project-viewers-${var.project_id}",
-    "READER:allUsers",
-  ]
-}
